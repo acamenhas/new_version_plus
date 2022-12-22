@@ -72,6 +72,12 @@ class NewVersionPlus {
   /// For example: US. The default is US.
   /// See http://en.wikipedia.org/wiki/ ISO_3166-1_alpha-2 for a list of ISO Country Codes.
   final String? iOSAppStoreCountry;
+  
+  /// Only affects iOS App Store lookup: The two-letter country code for the store you want to search.
+  /// Provide a value here if your app is only available outside the US.
+  /// For example: US. The default is US.
+  /// See http://en.wikipedia.org/wiki/ ISO_3166-1_alpha-2 for a list of ISO Country Codes.
+  final String? androidAppStoreCountry;
 
   /// An optional value that will force the plugin to always return [forceAppVersion]
   /// as the value of [storeVersion]. This can be useful to test the plugin's behavior
@@ -82,6 +88,7 @@ class NewVersionPlus {
     this.androidId,
     this.iOSId,
     this.iOSAppStoreCountry,
+    this.androidAppStoreCountry,
     this.forceAppVersion,
   });
 
@@ -160,7 +167,7 @@ class NewVersionPlus {
       PackageInfo packageInfo) async {
     final id = androidId ?? packageInfo.packageName;
     final uri = Uri.https("play.google.com", "/store/apps/details",
-        {"id": id.toString(), "hl": "en_US"});
+        {"id": id.toString(), "hl": androidAppStoreCountry != null ? androidAppStoreCountry! : "en_US"});
     final response = await http.get(uri);
     debugPrint(response.body);
     if (response.statusCode != 200) {
